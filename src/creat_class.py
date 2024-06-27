@@ -42,18 +42,14 @@ product_1 = Product(
     price=700.00,
     quantity=55,
 )
-product_2 = Product(
-    name="Канифоль", description="Смола для смазки смычка", price=250.00, quantity=120
-)
+product_2 = Product(name="Канифоль", description="Смола для смазки смычка", price=250.00, quantity=120)
 product_3 = Product(
     name="Скрипка",
     description="сидячий/стоячий инструмент",
     price=40000.00,
     quantity=14,
 )
-product_4 = Product(
-    name="Виолончель", description="сидячий инструмент", price=55000.00, quantity=13
-)
+product_4 = Product(name="Виолончель", description="сидячий инструмент", price=55000.00, quantity=13)
 
 category_1 = Category(
     name="Муз-ые аксессуары",
