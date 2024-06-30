@@ -1,9 +1,28 @@
+import json
+import os
+
+
 class Product:
     def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
         self.description = description
         self.price = price
         self.quantity = quantity
+
+    @classmethod
+    def create_product(cls, name, description, price, quantity):
+        return cls(name, description, price, quantity)
+
+    @property
+    def price(self):
+        return self._price
+
+    @price.setter
+    def price(self, price):
+        if price > 0:
+            self._price = price
+        else:
+            print("цена введена некорректная")
 
 
 class Category:
@@ -14,18 +33,23 @@ class Category:
     def __init__(self, name: str, description: str, products=None):
         self.name = name
         self.description = description
-        self.products = products if products is not None else []
+        self.__products = products if products is not None else []
         Category.total_categories += 1
         Category.categories_list.append(self)
-        for product in self.products:
+        for product in self.__products:
             Category.unique_products.add(product.name)
 
     def add_product(self, product: Product):
-        self.products.append(product)
+        self.__products.append(product)
+        Category.unique_products.add(product.name)
+
+    @property
+    def products(self):
+        return [f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт." for product in self.__products]
 
     def get_unique_products(self):
         unique_products = {}
-        for product in self.products:
+        for product in self.__products:
             if product.name not in unique_products:
                 unique_products[product.name] = {
                     "price": product.price,
@@ -36,50 +60,34 @@ class Category:
         return unique_products
 
 
-product_1 = Product(
-    name="Тюнер",
-    description="Устройство для настройки инструментов",
-    price=700.00,
-    quantity=55,
-)
-product_2 = Product(name="Канифоль", description="Смола для смазки смычка", price=250.00, quantity=120)
-product_3 = Product(
-    name="Скрипка",
-    description="сидячий/стоячий инструмент",
-    price=40000.00,
-    quantity=14,
-)
-product_4 = Product(name="Виолончель", description="сидячий инструмент", price=55000.00, quantity=13)
-
-category_1 = Category(
-    name="Муз-ые аксессуары",
-    description="полезные приспособления для игры и ремонта муз инструментов",
-    products=[product_1, product_2],
-)
-category_2 = Category(
-    name="Муз-ые инструменты",
-    description="инструменты для игры в оркестре",
-    products=[product_3, product_4],
-)
+def load_data_from_json(file_path):
+    with open(file_path, "r", encoding="utf-8") as file:
+        data = json.load(file)
+        for category_data in data:
+            products = [Product.create_product(**product_data) for product_data in category_data["products"]]
+            Category(name=category_data["name"], description=category_data["description"], products=products)
 
 
-def print_categories():
-    print("Список категорий:")
-    for category in Category.categories_list:
-        print(f"{category.name}: {category.description}")
+if __name__ == "__main__":
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    file_path = os.path.join(BASE_DIR, "data", "products.json")
 
+    load_data_from_json(file_path)
 
-def print_unique_products():
-    print("\nСписок уникальных продуктов:")
-    for category in Category.categories_list:
-        unique_products = category.get_unique_products()
-        for product_name, info in unique_products.items():
-            print(f"{product_name}: {info['price']} руб, {info['quantity']} шт")
+    def print_categories():
+        print("Список категорий:")
+        for category in Category.categories_list:
+            print(f"{category.name}: {category.description}")
 
+    def print_unique_products():
+        print("\nСписок уникальных продуктов:")
+        for category in Category.categories_list:
+            unique_products = category.get_unique_products()
+            for product_name, info in unique_products.items():
+                print(f"{product_name}: {info['price']} руб, Остаток: {info['quantity']} шт")
 
-print_categories()
-print_unique_products()
+    print_categories()
+    print_unique_products()
 
-
-print("\nОбщее количество категорий:", Category.total_categories)
-print("Общее количество уникальных продуктов:", len(Category.unique_products))
+    print("\nОбщее количество категорий:", Category.total_categories)
+    print("Общее количество уникальных продуктов:", len(Category.unique_products))
