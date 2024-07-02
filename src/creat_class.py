@@ -12,6 +12,12 @@ class Product:
     def __str__(self):
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
+    def __add__(self, other):
+        if isinstance(other, Product):
+            return (self.price * self.quantity) + (other.price * other.quantity)
+        else:
+            return NotImplemented
+
     @classmethod
     def create_product(cls, name, description, price, quantity):
         return cls(name, description, price, quantity)
@@ -54,13 +60,10 @@ class Category:
         unique_products = {}
         for product in self.__products:
             if product.name not in unique_products:
-                unique_products[product.name] = {
-                    "price": product.price,
-                    "quantity": product.quantity,
-                }
+                unique_products[product.name] = product
             else:
                 unique_products[product.name]["quantity"] += product.quantity
-        return unique_products
+        return unique_products.values()
 
     def __len__(self):
         return sum(product.quantity for product in self.__products)
@@ -98,14 +101,31 @@ if __name__ == "__main__":
         print("-------------------------------")
         print("Список уникальных продуктов:")
         print("-------------------------------")
+        unique_products = {}
         for category in Category.categories_list:
-            unique_products = category.get_unique_products()
-            for product_name, info in unique_products.items():
-                print(f"{product_name}: {info['price']} руб, Остаток: {info['quantity']} шт")
+            for product in category.get_unique_products():
+                if product.name not in unique_products:
+                    unique_products[product.name] = product
+                else:
+                    unique_products[product.name].quantity += product.quantity
+        for product in unique_products.values():
+            print(product)
+
+    def total_price_by_category():
+        print("-------------------------------")
+        print("Результаты сложения цен продуктов по категориям:")
+        for category in Category.categories_list:
+            total_sum = 0.0
+            print(f"Категория: {category.name}")
+            for product in category.get_unique_products():
+                total_sum += product.price * product.quantity
+            print(f"Общая сумма для категории {category.name}: {total_sum} руб.")
+            print()
 
     print_categories_description()
     print_categories()
     print_unique_products()
+    total_price_by_category()
 
     print("-------------------------------")
     print("\nОбщее количество категорий:", Category.total_categories)
