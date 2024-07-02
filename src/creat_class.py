@@ -1,13 +1,14 @@
 import json
 import os
-
-
 class Product:
     def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
         self.description = description
         self.price = price
         self.quantity = quantity
+
+    def __str__(self):
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     @classmethod
     def create_product(cls, name, description, price, quantity):
@@ -45,7 +46,7 @@ class Category:
 
     @property
     def products(self):
-        return [f"{product.name}, {product.price} руб. Остаток: {product.quantity} шт." for product in self.__products]
+        return [str(product) for product in self.__products]
 
     def get_unique_products(self):
         unique_products = {}
