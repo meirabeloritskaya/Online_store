@@ -1,5 +1,7 @@
 import json
 import os
+
+
 class Product:
     def __init__(self, name: str, description: str, price: float, quantity: int):
         self.name = name
@@ -60,6 +62,12 @@ class Category:
                 unique_products[product.name]["quantity"] += product.quantity
         return unique_products
 
+    def __len__(self):
+        return sum(product.quantity for product in self.__products)
+
+    def __str__(self):
+        return f"{self.name}, количество продуктов: {len(self)} шт."
+
 
 def load_data_from_json(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
@@ -75,20 +83,30 @@ if __name__ == "__main__":
 
     load_data_from_json(file_path)
 
-    def print_categories():
+    def print_categories_description():
         print("Список категорий:")
+        print("-----------------")
         for category in Category.categories_list:
             print(f"{category.name}: {category.description}")
 
+    def print_categories():
+        print("-------------------------------")
+        for category in Category.categories_list:
+            print(category)
+
     def print_unique_products():
-        print("\nСписок уникальных продуктов:")
+        print("-------------------------------")
+        print("Список уникальных продуктов:")
+        print("-------------------------------")
         for category in Category.categories_list:
             unique_products = category.get_unique_products()
             for product_name, info in unique_products.items():
                 print(f"{product_name}: {info['price']} руб, Остаток: {info['quantity']} шт")
 
+    print_categories_description()
     print_categories()
     print_unique_products()
 
+    print("-------------------------------")
     print("\nОбщее количество категорий:", Category.total_categories)
     print("Общее количество уникальных продуктов:", len(Category.unique_products))
