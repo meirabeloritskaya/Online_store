@@ -22,3 +22,7 @@ def test_init_product(product_rosin):
     assert product_rosin.description == "полезные приспособления для игры и ремонта муз инструментов"
     assert product_rosin.price == "Муз-ые инструменты"
     assert product_rosin.quantity == "полезные приспособления для игры и ремонта муз инструментов"
+
+
+if __name__ == "__main__":
+    pytest.main()
