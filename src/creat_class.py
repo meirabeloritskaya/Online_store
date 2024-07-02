@@ -3,16 +3,20 @@ import os
 
 
 class Product:
+    """Представляет продукт с названием, описанием, ценой и количеством."""
     def __init__(self, name: str, description: str, price: float, quantity: int):
+        """Инициализирует продукт с заданными параметрами."""
         self.name = name
         self.description = description
         self.price = price
         self.quantity = quantity
 
     def __str__(self):
+        """Возвращает строковое представление продукта."""
         return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт."
 
     def __add__(self, other):
+        """Складывает цены продуктов, умноженные на их количество."""
         if isinstance(other, Product):
             return (self.price * self.quantity) + (other.price * other.quantity)
         else:
@@ -20,14 +24,17 @@ class Product:
 
     @classmethod
     def create_product(cls, name, description, price, quantity):
+        """Создает новый экземпляр продукта через метод класса."""
         return cls(name, description, price, quantity)
 
     @property
     def price(self):
+        """Получает цену продукта."""
         return self._price
 
     @price.setter
     def price(self, price):
+        """Устанавливает цену продукта, если она положительная."""
         if price > 0:
             self._price = price
         else:
@@ -35,11 +42,13 @@ class Product:
 
 
 class Category:
+    """Представляет категорию продуктов с их уникальными наименованиями."""
     total_categories = 0
     categories_list = []
     unique_products = set()
 
     def __init__(self, name: str, description: str, products=None):
+        """Инициализирует категорию с заданным названием, описанием и продуктами."""
         self.name = name
         self.description = description
         self.__products = products if products is not None else []
@@ -49,14 +58,17 @@ class Category:
             Category.unique_products.add(product.name)
 
     def add_product(self, product: Product):
+        """Добавляет продукт в категорию."""
         self.__products.append(product)
         Category.unique_products.add(product.name)
 
     @property
     def products(self):
+        """Возвращает список строковых представлений продуктов в категории."""
         return [str(product) for product in self.__products]
 
     def get_unique_products(self):
+        """Возвращает уникальные продукты в категории."""
         unique_products = {}
         for product in self.__products:
             if product.name not in unique_products:
@@ -66,13 +78,16 @@ class Category:
         return unique_products.values()
 
     def __len__(self):
+        """Возвращает общее количество продуктов в категории."""
         return sum(product.quantity for product in self.__products)
 
     def __str__(self):
+        """Возвращает строковое представление категории."""
         return f"{self.name}, количество продуктов: {len(self)} шт."
 
 
 def load_data_from_json(file_path):
+    """Загружает данные о продуктах из JSON-файла."""
     with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
         for category_data in data:
@@ -87,17 +102,20 @@ if __name__ == "__main__":
     load_data_from_json(file_path)
 
     def print_categories_description():
+        """Печатает описание всех категорий."""
         print("Список категорий:")
         print("-----------------")
         for category in Category.categories_list:
             print(f"{category.name}: {category.description}")
 
     def print_categories():
+        """Печатает все категории."""
         print("-------------------------------")
         for category in Category.categories_list:
             print(category)
 
     def print_unique_products():
+        """Печатает список уникальных продуктов."""
         print("-------------------------------")
         print("Список уникальных продуктов:")
         print("-------------------------------")
@@ -112,6 +130,7 @@ if __name__ == "__main__":
             print(product)
 
     def total_price_by_category():
+        """Выводит общую стоимость продуктов по категориям."""
         print("-------------------------------")
         print("Результаты сложения цен продуктов по категориям:")
         for category in Category.categories_list:
