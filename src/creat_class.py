@@ -4,12 +4,14 @@ import os
 
 class Product:
     """Представляет продукт с названием, описанием, ценой и количеством."""
-    def __init__(self, name: str, description: str, price: float, quantity: int):
+
+    def __init__(self, name: str, description: str, price: float, quantity: int, color: str = ""):
         """Инициализирует продукт с заданными параметрами."""
         self.name = name
         self.description = description
         self.price = price
         self.quantity = quantity
+        self.color = color
 
     def __str__(self):
         """Возвращает строковое представление продукта."""
@@ -17,15 +19,15 @@ class Product:
 
     def __add__(self, other):
         """Складывает цены продуктов, умноженные на их количество."""
-        if isinstance(other, Product):
+        if isinstance(other, type(self)):
             return (self.price * self.quantity) + (other.price * other.quantity)
         else:
-            return NotImplemented
+            return "Можно складывать товары только из одинаковых классов продуктов"
 
     @classmethod
-    def create_product(cls, name, description, price, quantity):
+    def create_product(cls, name, description, price, quantity, color=""):
         """Создает новый экземпляр продукта через метод класса."""
-        return cls(name, description, price, quantity)
+        return cls(name, description, price, quantity, color)
 
     @property
     def price(self):
@@ -41,8 +43,49 @@ class Product:
             print("цена введена некорректная")
 
 
+class Smartphone(Product):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        color: str,
+        performance: float,
+        model: str,
+        memory: int,
+    ):
+        super().__init__(name, description, price, quantity, color)
+        self.performance = performance
+        self.model = model
+        self.memory = memory
+
+    def __str__(self):
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт., Производительность: {self.performance}, Модель: {self.model}, Память: {self.memory} ГБ"
+
+
+class LawnGrass(Product):
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        price: float,
+        quantity: int,
+        color: str,
+        country: str,
+        germination_period: int,
+    ):
+        super().__init__(name, description, price, quantity, color)
+        self.country = country
+        self.germination_period = germination_period
+
+    def __str__(self):
+        return f"{self.name}, {self.price} руб. Остаток: {self.quantity} шт., Страна: {self.country}, Срок прорастания: {self.germination_period} дней"
+
+
 class Category:
     """Представляет категорию продуктов с их уникальными наименованиями."""
+
     total_categories = 0
     categories_list = []
     unique_products = set()
@@ -57,10 +100,13 @@ class Category:
         for product in self.__products:
             Category.unique_products.add(product.name)
 
-    def add_product(self, product: Product):
+    def add_product(self, value: object):
         """Добавляет продукт в категорию."""
-        self.__products.append(product)
-        Category.unique_products.add(product.name)
+        if isinstance(value, Product):
+            self.__products.append(value)
+            Category.unique_products.add(value.name)
+        else:
+            raise ValueError("Можно добавлять только объекты классов Product и его наследников")
 
     @property
     def products(self):
@@ -91,8 +137,45 @@ def load_data_from_json(file_path):
     with open(file_path, "r", encoding="utf-8") as file:
         data = json.load(file)
         for category_data in data:
-            products = [Product.create_product(**product_data) for product_data in category_data["products"]]
+            products = []
+            for product_data in category_data["products"]:
+                if category_data["name"] == "Smartphone":
+                    products.append(
+                        Smartphone(
+                            name=product_data["name"],
+                            description=product_data["description"],
+                            price=product_data["price"],
+                            quantity=product_data["quantity"],
+                            color=product_data.get("color", ""),
+                            performance=product_data.get("performance", 0.0),
+                            model=product_data.get("model", ""),
+                            memory=product_data.get("memory", 0),
+                        )
+                    )
+                elif category_data["name"] == "LawnGrass":
+                    products.append(
+                        LawnGrass(
+                            name=product_data["name"],
+                            description=product_data["description"],
+                            price=product_data["price"],
+                            quantity=product_data["quantity"],
+                            color=product_data.get("color", ""),
+                            country=product_data["country"],
+                            germination_period=product_data["germination_period"],
+                        )
+                    )
+                else:
+                    products.append(
+                        Product.create_product(
+                            name=product_data["name"],
+                            description=product_data["description"],
+                            price=product_data["price"],
+                            quantity=product_data["quantity"],
+                        )
+                    )
             Category(name=category_data["name"], description=category_data["description"], products=products)
+            # products = [Product.create_product(**product_data) for product_data in category_data["products"]]
+            # Category(name=category_data["name"], description=category_data["description"], products=products)
 
 
 if __name__ == "__main__":
