@@ -17,6 +17,7 @@ class MixinLog:
     def log_creation(self):
         class_name = self.__class__.__name__
         attributes = ", ".join(f"{key}={value}" for key, value in self.__dict__.items())
+        print("-------------------------------")
         print(f"Создан объект: {class_name} с атрибутами: {attributes}")
 
 
@@ -205,6 +206,7 @@ if __name__ == "__main__":
 
     def print_categories_description():
         """Печатает описание всех категорий."""
+        print("-----------------")
         print("Список категорий:")
         print("-----------------")
         for category in Category.categories_list:
