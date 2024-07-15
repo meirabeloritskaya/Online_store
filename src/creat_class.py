@@ -1,8 +1,27 @@
 import json
 import os
+from abc import ABC, abstractmethod
 
 
-class Product:
+class ProductAbstract(ABC):
+    @abstractmethod
+    def __str__(self):
+        pass
+
+
+class MixinLog:
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.log_creation()
+
+    def log_creation(self):
+        class_name = self.__class__.__name__
+        attributes = ", ".join(f"{key}={value}" for key, value in self.__dict__.items())
+        print("-------------------------------")
+        print(f"Создан объект: {class_name} с атрибутами: {attributes}")
+
+
+class Product(ProductAbstract, MixinLog):
     """Представляет продукт с названием, описанием, ценой и количеством."""
 
     def __init__(self, name: str, description: str, price: float, quantity: int, color: str = ""):
@@ -12,6 +31,7 @@ class Product:
         self.price = price
         self.quantity = quantity
         self.color = color
+        super().__init__()
 
     def __str__(self):
         """Возвращает строковое представление продукта."""
@@ -186,6 +206,7 @@ if __name__ == "__main__":
 
     def print_categories_description():
         """Печатает описание всех категорий."""
+        print("-----------------")
         print("Список категорий:")
         print("-----------------")
         for category in Category.categories_list:
@@ -215,7 +236,7 @@ if __name__ == "__main__":
     def total_price_by_category():
         """Выводит общую стоимость продуктов по категориям."""
         print("-------------------------------")
-        print("Результаты сложения цен продуктов по категориям:")
+        print("Результаты сложения цен продуктов по категориям:\n")
         for category in Category.categories_list:
             total_sum = 0.0
             print(f"Категория: {category.name}")
