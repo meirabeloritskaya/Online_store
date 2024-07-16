@@ -32,6 +32,16 @@
         "performance": 7.5,
         "model": "Redmi Note 11",
         "memory": 1024
+      },
+      {
+        "name": "Samsung Galaxy C23 Ultra",
+        "description": "256GB, Серый цвет, 200MP камера",
+        "price": 50000.0,
+        "quantity": 0,
+        "color": "Черный",
+        "performance": 5.0,
+        "model": "TestModel",
+        "memory": 128
       }
     ]
   },

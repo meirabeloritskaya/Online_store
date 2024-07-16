@@ -21,11 +21,22 @@ class MixinLog:
         print(f"Создан объект: {class_name} с атрибутами: {attributes}")
 
 
+class ZeroQuantityError(Exception):
+    """Исключение для продуктов с нулевым количеством."""
+
+    def __init__(self, message="Товар с нулевым количеством не может быть добавлен."):
+        self.message = message
+        super().__init__(self.message)
+
+
 class Product(ProductAbstract, MixinLog):
     """Представляет продукт с названием, описанием, ценой и количеством."""
 
     def __init__(self, name: str, description: str, price: float, quantity: int, color: str = ""):
         """Инициализирует продукт с заданными параметрами."""
+        if quantity == 0:
+            raise ZeroQuantityError()
+
         self.name = name
         self.description = description
         self.price = price
@@ -115,6 +126,7 @@ class Category:
         self.name = name
         self.description = description
         self.__products = products if products is not None else []
+
         Category.total_categories += 1
         Category.categories_list.append(self)
         for product in self.__products:
@@ -159,43 +171,45 @@ def load_data_from_json(file_path):
         for category_data in data:
             products = []
             for product_data in category_data["products"]:
-                if category_data["name"] == "Smartphone":
-                    products.append(
-                        Smartphone(
-                            name=product_data["name"],
-                            description=product_data["description"],
-                            price=product_data["price"],
-                            quantity=product_data["quantity"],
-                            color=product_data.get("color", ""),
-                            performance=product_data.get("performance", 0.0),
-                            model=product_data.get("model", ""),
-                            memory=product_data.get("memory", 0),
+                try:
+                    if category_data["name"] == "Smartphone":
+                        products.append(
+                            Smartphone(
+                                name=product_data["name"],
+                                description=product_data["description"],
+                                price=product_data["price"],
+                                quantity=product_data["quantity"],
+                                color=product_data.get("color", ""),
+                                performance=product_data.get("performance", 0.0),
+                                model=product_data.get("model", ""),
+                                memory=product_data.get("memory", 0),
+                            )
                         )
-                    )
-                elif category_data["name"] == "LawnGrass":
-                    products.append(
-                        LawnGrass(
-                            name=product_data["name"],
-                            description=product_data["description"],
-                            price=product_data["price"],
-                            quantity=product_data["quantity"],
-                            color=product_data.get("color", ""),
-                            country=product_data["country"],
-                            germination_period=product_data["germination_period"],
+                    elif category_data["name"] == "LawnGrass":
+                        products.append(
+                            LawnGrass(
+                                name=product_data["name"],
+                                description=product_data["description"],
+                                price=product_data["price"],
+                                quantity=product_data["quantity"],
+                                color=product_data.get("color", ""),
+                                country=product_data["country"],
+                                germination_period=product_data["germination_period"],
+                            )
                         )
-                    )
-                else:
-                    products.append(
-                        Product.create_product(
-                            name=product_data["name"],
-                            description=product_data["description"],
-                            price=product_data["price"],
-                            quantity=product_data["quantity"],
+                    else:
+                        products.append(
+                            Product.create_product(
+                                name=product_data["name"],
+                                description=product_data["description"],
+                                price=product_data["price"],
+                                quantity=product_data["quantity"],
+                            )
                         )
-                    )
+                except ZeroQuantityError as e:
+                    print("______________")
+                    print(f"Ошибка при добавлении продукта {product_data["name"]}: {e}")
             Category(name=category_data["name"], description=category_data["description"], products=products)
-            # products = [Product.create_product(**product_data) for product_data in category_data["products"]]
-            # Category(name=category_data["name"], description=category_data["description"], products=products)
 
 
 if __name__ == "__main__":
