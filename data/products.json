@@ -80,5 +80,10 @@
         "germination_period": 10
       }
     ]
+  },
+  {
+    "name": "Gardening Tools",
+    "description": "универсальный набор садовых инструментов на все случаи жизни",
+    "products": []
   }
 ]

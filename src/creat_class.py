@@ -157,7 +157,17 @@ class Category:
 
     def __len__(self):
         """Возвращает общее количество продуктов в категории."""
-        return sum(product.quantity for product in self.__products)
+        total_count_product = sum(product.quantity for product in self.__products)
+        return total_count_product
+
+    def avg_price_products(self):
+        """Возвращает среднюю стоимость продуктов в категории."""
+        try:
+            unique_prices = set(product.price for product in self.__products)
+            avg_price = sum(unique_prices) / len(unique_prices)
+            return avg_price
+        except ZeroDivisionError:
+            return 0
 
     def __str__(self):
         """Возвращает строковое представление категории."""
@@ -208,7 +218,8 @@ def load_data_from_json(file_path):
                         )
                 except ZeroQuantityError as e:
                     print("______________")
-                    print(f"Ошибка при добавлении продукта {product_data["name"]}: {e}")
+                    print(f"Ошибка при добавлении продукта {product_data['name']}: {e}")
+
             Category(name=category_data["name"], description=category_data["description"], products=products)
 
 
@@ -247,7 +258,7 @@ if __name__ == "__main__":
         for product in unique_products.values():
             print(product)
 
-    def total_price_by_category():
+    def print_total_price_by_category():
         """Выводит общую стоимость продуктов по категориям."""
         print("-------------------------------")
         print("Результаты сложения цен продуктов по категориям:\n")
@@ -259,10 +270,19 @@ if __name__ == "__main__":
             print(f"Общая сумма для категории {category.name}: {total_sum} руб.")
             print()
 
+    def print_avg_price_by_category():
+        """Выводит среднюю цену продуктов по категориям."""
+        print("-------------------------------")
+        print("среднюю цену продуктов по категориям:\n")
+        for category in Category.categories_list:
+            avg_price = category.avg_price_products()
+            print(f"Средняя цена для категории {category.name}: {avg_price} руб.")
+
     print_categories_description()
     print_categories()
     print_unique_products()
-    total_price_by_category()
+    print_total_price_by_category()
+    print_avg_price_by_category()
 
     print("-------------------------------")
     print("\nОбщее количество категорий:", Category.total_categories)
