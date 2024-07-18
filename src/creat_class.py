@@ -21,11 +21,22 @@ class MixinLog:
         print(f"Создан объект: {class_name} с атрибутами: {attributes}")
 
 
+class ZeroQuantityError(Exception):
+    """Исключение для продуктов с нулевым количеством."""
+
+    def __init__(self, message="Товар с нулевым количеством не может быть добавлен."):
+        self.message = message
+        super().__init__(self.message)
+
+
 class Product(ProductAbstract, MixinLog):
     """Представляет продукт с названием, описанием, ценой и количеством."""
 
     def __init__(self, name: str, description: str, price: float, quantity: int, color: str = ""):
         """Инициализирует продукт с заданными параметрами."""
+        if quantity == 0:
+            raise ZeroQuantityError()
+
         self.name = name
         self.description = description
         self.price = price
@@ -115,6 +126,7 @@ class Category:
         self.name = name
         self.description = description
         self.__products = products if products is not None else []
+
         Category.total_categories += 1
         Category.categories_list.append(self)
         for product in self.__products:
@@ -145,7 +157,17 @@ class Category:
 
     def __len__(self):
         """Возвращает общее количество продуктов в категории."""
-        return sum(product.quantity for product in self.__products)
+        total_count_product = sum(product.quantity for product in self.__products)
+        return total_count_product
+
+    def avg_price_products(self):
+        """Возвращает среднюю стоимость продуктов в категории."""
+        try:
+            unique_prices = set(product.price for product in self.__products)
+            avg_price = sum(unique_prices) / len(unique_prices)
+            return avg_price
+        except ZeroDivisionError:
+            return 0
 
     def __str__(self):
         """Возвращает строковое представление категории."""
@@ -159,43 +181,46 @@ def load_data_from_json(file_path):
         for category_data in data:
             products = []
             for product_data in category_data["products"]:
-                if category_data["name"] == "Smartphone":
-                    products.append(
-                        Smartphone(
-                            name=product_data["name"],
-                            description=product_data["description"],
-                            price=product_data["price"],
-                            quantity=product_data["quantity"],
-                            color=product_data.get("color", ""),
-                            performance=product_data.get("performance", 0.0),
-                            model=product_data.get("model", ""),
-                            memory=product_data.get("memory", 0),
+                try:
+                    if category_data["name"] == "Smartphone":
+                        products.append(
+                            Smartphone(
+                                name=product_data["name"],
+                                description=product_data["description"],
+                                price=product_data["price"],
+                                quantity=product_data["quantity"],
+                                color=product_data.get("color", ""),
+                                performance=product_data.get("performance", 0.0),
+                                model=product_data.get("model", ""),
+                                memory=product_data.get("memory", 0),
+                            )
                         )
-                    )
-                elif category_data["name"] == "LawnGrass":
-                    products.append(
-                        LawnGrass(
-                            name=product_data["name"],
-                            description=product_data["description"],
-                            price=product_data["price"],
-                            quantity=product_data["quantity"],
-                            color=product_data.get("color", ""),
-                            country=product_data["country"],
-                            germination_period=product_data["germination_period"],
+                    elif category_data["name"] == "LawnGrass":
+                        products.append(
+                            LawnGrass(
+                                name=product_data["name"],
+                                description=product_data["description"],
+                                price=product_data["price"],
+                                quantity=product_data["quantity"],
+                                color=product_data.get("color", ""),
+                                country=product_data["country"],
+                                germination_period=product_data["germination_period"],
+                            )
                         )
-                    )
-                else:
-                    products.append(
-                        Product.create_product(
-                            name=product_data["name"],
-                            description=product_data["description"],
-                            price=product_data["price"],
-                            quantity=product_data["quantity"],
+                    else:
+                        products.append(
+                            Product.create_product(
+                                name=product_data["name"],
+                                description=product_data["description"],
+                                price=product_data["price"],
+                                quantity=product_data["quantity"],
+                            )
                         )
-                    )
+                except ZeroQuantityError as e:
+                    print("______________")
+                    print(f"Ошибка при добавлении продукта {product_data['name']}: {e}")
+
             Category(name=category_data["name"], description=category_data["description"], products=products)
-            # products = [Product.create_product(**product_data) for product_data in category_data["products"]]
-            # Category(name=category_data["name"], description=category_data["description"], products=products)
 
 
 if __name__ == "__main__":
@@ -233,7 +258,7 @@ if __name__ == "__main__":
         for product in unique_products.values():
             print(product)
 
-    def total_price_by_category():
+    def print_total_price_by_category():
         """Выводит общую стоимость продуктов по категориям."""
         print("-------------------------------")
         print("Результаты сложения цен продуктов по категориям:\n")
@@ -245,10 +270,19 @@ if __name__ == "__main__":
             print(f"Общая сумма для категории {category.name}: {total_sum} руб.")
             print()
 
+    def print_avg_price_by_category():
+        """Выводит среднюю цену продуктов по категориям."""
+        print("-------------------------------")
+        print("среднюю цену продуктов по категориям:\n")
+        for category in Category.categories_list:
+            avg_price = category.avg_price_products()
+            print(f"Средняя цена для категории {category.name}: {avg_price} руб.")
+
     print_categories_description()
     print_categories()
     print_unique_products()
-    total_price_by_category()
+    print_total_price_by_category()
+    print_avg_price_by_category()
 
     print("-------------------------------")
     print("\nОбщее количество категорий:", Category.total_categories)
