@@ -1,0 +1,224 @@
+[
+{
+    "model": "catalog.category",
+    "pk": 1,
+    "fields": {
+        "name": "Струнные инструменты",
+        "description": "Инструменты, которые производят звук через колебания струн"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 2,
+    "fields": {
+        "name": "Клавишные инструменты",
+        "description": "Инструменты с клавишами для извлечения звука"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 3,
+    "fields": {
+        "name": "Ударные инструменты",
+        "description": "Инструменты для ритмического сопровождения"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 4,
+    "fields": {
+        "name": "Духовые инструменты",
+        "description": "Инструменты, которые производят звук через воздушный поток"
+    }
+},
+{
+    "model": "catalog.category",
+    "pk": 5,
+    "fields": {
+        "name": "Электрогитары",
+        "description": "Электрические гитары для рок и джаз музыки"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 1,
+    "fields": {
+        "name": "Гитара акустическая",
+        "description": "Классическая акустическая гитара для начинающих и профессионалов.",
+        "image": "guitar_image.jpg",
+        "category": 1,
+        "price": "15000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 2,
+    "fields": {
+        "name": "Скрипка 4/4",
+        "description": "Стандартная скрипка с размером 4/4 для профессиональной игры.",
+        "image": "violin_image.jpg",
+        "category": 1,
+        "price": "25000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 3,
+    "fields": {
+        "name": "Виолончель профессиональная",
+        "description": "Виолончель для концертной игры и обучения.",
+        "image": "cello_image.jpg",
+        "category": 1,
+        "price": "45000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 4,
+    "fields": {
+        "name": "Фортепиано Yamaha",
+        "description": "Классическое акустическое фортепиано для профессионалов.",
+        "image": "piano_image.jpg",
+        "category": 2,
+        "price": "135000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 6,
+    "fields": {
+        "name": "Электронный орган",
+        "description": "Электронный орган для исполнения классической и современной музыки.",
+        "image": "organ_image.jpg",
+        "category": 2,
+        "price": "75000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 7,
+    "fields": {
+        "name": "Барабанная установка Pearl",
+        "description": "Полная барабанная установка для профессионалов.",
+        "image": "drum_set_image.jpg",
+        "category": 3,
+        "price": "85000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 8,
+    "fields": {
+        "name": "Малый барабан",
+        "description": "Малый барабан для оркестрового и эстрадного использования.",
+        "image": "snare_drum_image.jpg",
+        "category": 3,
+        "price": "12000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 9,
+    "fields": {
+        "name": "Тарелки Zildjian",
+        "description": "Профессиональные тарелки для барабанных установок.",
+        "image": "cymbals_image.jpg",
+        "category": 3,
+        "price": "20000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 10,
+    "fields": {
+        "name": "Флейта Yamaha",
+        "description": "Серебряная флейта для начинающих и профессиональных музыкантов.",
+        "image": "flute_image.jpg",
+        "category": 4,
+        "price": "35000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 11,
+    "fields": {
+        "name": "Саксофон Alto",
+        "description": "Саксофон альт для джазовой и классической музыки.",
+        "image": "saxophone_image.jpg",
+        "category": 4,
+        "price": "65000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 12,
+    "fields": {
+        "name": "Труба Bach",
+        "description": "Классическая труба для оркестров и ансамблей.",
+        "image": "trumpet_image.jpg",
+        "category": 4,
+        "price": "40000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 13,
+    "fields": {
+        "name": "Fender Telecaster",
+        "description": "Электрогитара Fender Telecaster для рок и блюза.",
+        "image": "telecaster_image.jpg",
+        "category": 5,
+        "price": "95000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 14,
+    "fields": {
+        "name": "Fender Stratocaster",
+        "description": "Электрогитара Fender Stratocaster для универсального использования.",
+        "image": "stratocaster_image.jpg",
+        "category": 5,
+        "price": "100000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+},
+{
+    "model": "catalog.product",
+    "pk": 15,
+    "fields": {
+        "name": "Gibson Les Paul",
+        "description": "Легендарная электрогитара Gibson Les Paul для профессионалов.",
+        "image": "gibson_image.jpg",
+        "category": 5,
+        "price": "150000.00",
+        "created_at": "2024-09-15",
+        "updated_at": "2024-09-15"
+    }
+}
+]
