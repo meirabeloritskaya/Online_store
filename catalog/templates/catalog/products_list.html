@@ -1,16 +1,14 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Products List</title>
-</head>
-<body>
-    <h1>Products List</h1>
-    <ul>
+{% extends 'base.html' %}
+
+{% block title %}Products List - Skystore{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <h1 class="my-4">Products List</h1>
+    <ul class="list-unstyled">
         {% for product in products %}
-            <li>
-                <a href="{% url 'catalog:product_detail' product.id %}">
+            <li class="mb-3">
+                <a href="{% url 'catalog:product_detail' product.id %}" class="btn btn-outline-primary">
                     {{ product.name }} - ${{ product.price }}
                 </a>
             </li>
@@ -18,5 +16,5 @@
             <li>No products available.</li>
         {% endfor %}
     </ul>
-</body>
-</html>
+</div>
+{% endblock %}
