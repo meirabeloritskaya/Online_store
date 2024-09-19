@@ -17,7 +17,7 @@
                     <h4 class="my-0 font-weight-normal">{{ product.name }}</h4>
                 </div>
                 <div class="card-body">
-                    <p class="card-text">{{ product.description|slice:":100" }}{% if product.description|length > 100 %}...{% endif %}</p>
+                    <p class="card-text">{{ product.description|truncatechars:100 }}</p>
                     <h1 class="card-title pricing-card-title">${{ product.price }}</h1>
                     <button type="button" class="btn btn-lg btn-primary">Купить</button>
                 </div>
