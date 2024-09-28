@@ -1,9 +1,9 @@
-{% extends "catalog/base.html" %}
+{% extends "blog/base.html" %}
 
 {% block title %}{{ blogpost.title }}{% endblock %}
 
 {% block content %}
-  {% include 'catalog/navbar.html' %}
+  {% include 'blog/navbar.html' %}
   <h1>{{ blogpost.title }}</h1>
   <p>{{ blogpost.content }}</p>
   <p><img src="{{ blogpost.preview_image.url }}" alt="Превью"></p>
@@ -16,4 +16,4 @@
   <a href="{% url 'blog:blogpost_list' %}">Назад к списку</a>
 {% endblock %}
 
-{% include 'catalog/footer.html' %}
+{% include 'blog/footer.html' %}

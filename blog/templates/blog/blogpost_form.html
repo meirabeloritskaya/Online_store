@@ -1,9 +1,9 @@
-{% extends "catalog/base.html" %}
+{% extends "blog/base.html" %}
 
 {% block title %}{% if object %}Редактировать запись{% else %}Создать новую запись{% endif %}{% endblock %}
 
 {% block content %}
-  {% include 'catalog/navbar.html' %}
+  {% include 'blog/navbar.html' %}
   <h1>{% if object %}Редактировать запись{% else %}Создать новую запись{% endif %}</h1>
   
   <form method="post" enctype="multipart/form-data">
@@ -15,4 +15,4 @@
   <a href="{% url 'blog:blogpost_list' %}">Назад к списку</a>
 {% endblock %}
 
-{% include 'catalog/footer.html' %}
+{% include 'blog/footer.html' %}

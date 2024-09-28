@@ -1,9 +1,9 @@
-{% extends "catalog/base.html" %}
+{% extends "blog/base.html" %}
 
 {% block title %}Список записей блога{% endblock %}
 
 {% block content %}
-  {% include 'catalog/navbar.html' %}
+  {% include 'blog/navbar.html' %}
   <h1>Блоговые записи</h1>
   <ul>
     {% for post in blogposts %}
@@ -18,4 +18,4 @@
   <a href="{% url 'blog:blogpost_create' %}">Создать новую запись</a>
 {% endblock %}
 
-{% include 'catalog/footer.html' %}
+{% include 'blog/footer.html' %}
