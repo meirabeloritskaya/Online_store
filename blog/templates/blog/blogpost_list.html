@@ -1,0 +1,20 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Список записей блога{% endblock %}
+
+{% block content %}
+  <h1>Блоговые записи</h1>
+  <ul>
+    {% for post in blogposts %}
+      <li>
+        <a href="{% url 'blog:blogpost_detail' post.pk %}">{{ post.title }}</a>
+        - {{ post.created_at|date:"d M Y" }} (Просмотры: {{ post.views_count }})
+      </li>
+    {% empty %}
+      <li>Записей пока нет.</li>
+    {% endfor %}
+  </ul>
+  <a href="{% url 'blog:blogpost_create' %}">Создать новую запись</a>
+{% endblock %}
+
+{% include 'blog/footer.html' %}

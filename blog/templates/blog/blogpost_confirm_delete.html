@@ -1,0 +1,18 @@
+{% extends "blog/base.html" %}
+
+{% block title %}Удаление "{{ object.title }}"{% endblock %}
+
+{% block content %}
+  {% include 'blog/navbar.html' %}
+  <h1>Удалить "{{ object.title }}"?</h1>
+  <p>Вы уверены, что хотите удалить эту запись?</p>
+  
+  <form method="post">
+    {% csrf_token %}
+    <button type="submit">Удалить</button>
+  </form>
+
+  <a href="{% url 'blog:blogpost_list' %}">Отмена</a>
+{% endblock %}
+
+{% include 'blog/footer.html' %}
