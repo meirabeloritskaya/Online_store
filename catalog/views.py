@@ -3,6 +3,7 @@ from .models import Product
 from django.views.generic import TemplateView
 from django.views.generic import DetailView
 
+
 class HomeView(ListView):
     model = Product
     template_name = "home.html"
