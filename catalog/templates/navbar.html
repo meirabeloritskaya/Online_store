@@ -6,7 +6,10 @@
         <a class="p-2 btn btn-primary" href="{% url 'blog:blogpost_list' %}">Блог</a>
 
         {% if user.is_authenticated %}
-            <a class="p-2 btn btn-danger" href="{% url 'logout' %}">Выход</a>
+            <form action="{% url 'logout' %}" method="post" style="display:inline;">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger">Выход</button>
+        </form>
         {% else %}
             <a class="p-2 btn btn-primary" href="{% url 'register' %}">Регистрация</a>
             <a class="p-2 btn btn-primary" href="{% url 'login' %}">Вход</a>

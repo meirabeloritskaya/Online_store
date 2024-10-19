@@ -5,6 +5,7 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.urls import reverse_lazy
+from django.contrib.auth.views import LogoutView
 
 
 def register(request):
@@ -28,7 +29,13 @@ def register(request):
 
     return render(request, 'users/register.html', {'form': form})
 
+
 class CustomLoginView(LoginView):
+
     template_name = 'users/login.html'
     redirect_authenticated_user = True  # Перенаправление, если пользователь уже авторизован
     success_url = settings.LOGIN_REDIRECT_URL  # Перенаправление после успешной авторизации
+
+
+class CustomLogoutView(LogoutView):
+    template_name = ''
