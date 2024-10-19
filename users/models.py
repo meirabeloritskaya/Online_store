@@ -9,7 +9,7 @@ class CustomUser(AbstractUser):
 
     # Указываем, что email будет использоваться для входа вместо username
     USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']  # Поля, которые требуются при создании пользователя через командную строку
+    REQUIRED_FIELDS = []  # Поля, которые требуются при создании пользователя через командную строку
 
     class Meta:
         verbose_name = "Пользователь"
