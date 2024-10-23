@@ -15,8 +15,8 @@ import secrets
 class UserCreateView(CreateView):
     model = CustomUser
     form_class = CustomUserCreationForm
-    template_name = 'users/register.html'
-    success_url = reverse_lazy('users:login')
+    template_name = "users/register.html"
+    success_url = reverse_lazy("users:login")
 
     def form_valid(self, form):
         user = form.save()
@@ -31,7 +31,7 @@ class UserCreateView(CreateView):
             subject="Подтверждение почты",
             message=f"Привет, перейди по ссылке {url} для подтверждления почты",
             from_email=EMAIL_HOST_USER,
-            recipient_list=[user.email]
+            recipient_list=[user.email],
         )
         return super().form_valid(form)
 
@@ -45,11 +45,10 @@ def email_verification(request, token):
 
 class CustomLoginView(LoginView):
 
-    template_name = 'users/login.html'
+    template_name = "users/login.html"
     redirect_authenticated_user = True
     success_url = settings.LOGIN_REDIRECT_URL
 
 
 class CustomLogoutView(LogoutView):
-    template_name = ''
-
+    template_name = ""

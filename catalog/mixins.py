@@ -2,4 +2,4 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class LoginRequiredMixin(LoginRequiredMixin):
-    login_url = '/login/'
+    login_url = "/login/"

@@ -31,7 +31,6 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
     is_published = models.BooleanField(default=False, verbose_name="Опубликован")
 
-
     def __str__(self):
         return self.name
 
@@ -41,4 +40,5 @@ class Product(models.Model):
         ordering = ["name"]
         permissions = [
             ("can_unpublish_product", "Может отменять публикацию продукта"),
+            ("can_delete_product", "Может удалять продукт"),
         ]
