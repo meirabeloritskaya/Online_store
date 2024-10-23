@@ -9,12 +9,11 @@ class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
         with transaction.atomic():
-            # Удаление всех существующих данных
+
             self.stdout.write(self.style.NOTICE("Deleting existing data..."))
             Product.objects.all().delete()
             Category.objects.all().delete()
 
-            # Добавление категорий
             categories = [
                 {
                     "name": "Guitars",
@@ -51,7 +50,6 @@ class Command(BaseCommand):
                         self.style.WARNING(f"Category already exists: {category.name}")
                     )
 
-            # Добавление продуктов
             products = [
                 {
                     "name": "Fender Stratocaster",
@@ -101,7 +99,18 @@ class Command(BaseCommand):
             ]
 
             for prod_data in products:
-                product, created = Product.objects.get_or_create(**prod_data)
+                category, _ = Category.objects.get_or_create(
+                    name=prod_data["category_name"]
+                )
+                product, created = Product.objects.get_or_create(
+                    name=prod_data["name"],
+                    description=prod_data["description"],
+                    image=prod_data["image"],
+                    category=category,
+                    price=prod_data["price"],
+                    created_at=prod_data["created_at"],
+                    updated_at=prod_data["updated_at"],
+                )
                 if created:
                     self.stdout.write(
                         self.style.SUCCESS(
