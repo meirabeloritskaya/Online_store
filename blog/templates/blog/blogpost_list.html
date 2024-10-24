@@ -3,7 +3,10 @@
 {% block title %}Список записей блога{% endblock %}
 
 {% block content %}
-  <h1>Блоговые записи</h1>
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Блоговые записи</h1>
+</div>
+
   <ul>
     {% for post in blogposts %}
       <li>
