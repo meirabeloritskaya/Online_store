@@ -6,13 +6,12 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.http import HttpResponseRedirect
+from django.contrib import messages
 from .models import Product
 from .forms import ProductForm
 from django.urls import reverse_lazy
-from django.http import HttpResponseForbidden
-from django.shortcuts import get_object_or_404, redirect
-from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
-from django.views import View
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 class HomeView(ListView):
@@ -51,34 +50,29 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     template_name = "catalog/product_editor.html"
     success_url = reverse_lazy("catalog:products_list")
 
+    def form_valid(self, form):
+        if not self.request.user.has_perm("catalog.can_edit_product"):
+            # Добавляем флеш-сообщение
+            messages.error(self.request, "У вас нет прав на редактирование продукта.")
+            # Перенаправляем на предыдущую страницу или список продуктов
+            return HttpResponseRedirect(
+                self.request.META.get("HTTP_REFERER", self.success_url)
+            )
+        return super().form_valid(form)
+
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
     model = Product
     template_name = "catalog/product_confirm_delete.html"
     success_url = reverse_lazy("catalog:products_list")
-    permission_required = "catalog.can_delete_product"
 
+    def post(self, request, *args, **kwargs):
 
-class ProductManagementView(LoginRequiredMixin, PermissionRequiredMixin, View):
-    permission_required = [
-        "catalog.can_unpublish_product",
-        "catalog.can_delete_product",
-    ]
+        if not request.user.has_perm("catalog.can_delete_product"):
 
-    def post(self, request, product_id):
-        product = get_object_or_404(Product, id=product_id)
+            messages.error(request, "У вас нет прав на удаление продукта.")
 
-        if "unpublish" in request.POST:
-            if not request.user.has_perm("product.can_unpublish_product"):
-                return HttpResponseForbidden("У вас нет права отменять публикацию")
-            product.is_published = False
-            product.save()
-            return redirect("catalog:products_list")
-
-        elif "delete" in request.POST:
-            if not request.user.has_perm("product.delete_product"):
-                return HttpResponseForbidden("У вас нет права удалять продукт")
-            product.delete()
-            return redirect("catalog:products_list")
-
-        return HttpResponseForbidden("Некорректное действие")
+            return HttpResponseRedirect(
+                request.META.get("HTTP_REFERER", self.success_url)
+            )
+        return super().post(request, *args, **kwargs)

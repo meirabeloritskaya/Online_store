@@ -5,6 +5,18 @@
 {% block content %}
 <div class="container mt-5">
     <h1>Подтверждение удаления продукта</h1>
+
+    <!-- Блок для отображения сообщений -->
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>
+                    {{ message }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
     <p>Вы уверены, что хотите удалить "{{ object.name }}"?</p>
 
     <form method="POST">
