@@ -1,5 +1,4 @@
 from django.contrib import admin
-
 from .models import Category, Product
 
 
@@ -22,9 +21,11 @@ class ProductAdmin(admin.ModelAdmin):
         "name",
         "price",
         "category",
+        "owner",  # Добавляем владельца
     )
-    list_filter = ("category",)
+    list_filter = ("category", "owner")  # Добавляем фильтр по владельцу
     search_fields = (
         "name",
         "description",
+        "owner__email",  # Позволяет искать по email владельца
     )

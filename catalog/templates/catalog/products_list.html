@@ -19,8 +19,12 @@
                             {{ product.name }} - ${{ product.price }}
                         </a>
                     </div>
-
                     <div class="col-md-6 text-end">
+                        {% if product.owner %}
+                              <span class="text-muted">Владелец: {{ product.owner.email }}</span>
+                        {% else %}
+                              <span class="text-muted">Владелец: Не назначен</span>
+                        {% endif %}
                         <a href="{% url 'catalog:product_update' product.id %}" class="btn btn-warning mx-2">Редактировать</a>
                         <a href="{% url 'catalog:product_delete' product.id %}" class="btn btn-danger mx-2">Удалить</a>
                     </div>
