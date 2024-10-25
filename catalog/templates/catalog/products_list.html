@@ -25,6 +25,14 @@
                         {% else %}
                               <span class="text-muted">Владелец: Не назначен</span>
                         {% endif %}
+
+
+                        {% if perms.catalog.can_unpublish_product %}
+                            <span class="badge {% if product.is_published %}bg-success{% else %}bg-secondary{% endif %}">
+                                {% if product.is_published %}Опубликован{% else %}Не опубликован{% endif %}
+                            </span>
+                        {% endif %}
+
                         <a href="{% url 'catalog:product_update' product.id %}" class="btn btn-warning mx-2">Редактировать</a>
                         <a href="{% url 'catalog:product_delete' product.id %}" class="btn btn-danger mx-2">Удалить</a>
                     </div>

@@ -30,7 +30,7 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, verbose_name="Цена")
     created_at = models.DateTimeField(auto_now_add=True, verbose_name="Дата создания")
     updated_at = models.DateTimeField(auto_now=True, verbose_name="Дата обновления")
-    is_published = models.BooleanField(default=False, verbose_name="Опубликован")
+    is_published = models.BooleanField(default=True, verbose_name="Опубликован")
     owner = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,

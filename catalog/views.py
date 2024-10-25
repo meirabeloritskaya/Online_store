@@ -12,12 +12,17 @@ from .models import Product
 from .forms import ProductForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import redirect
 
 
 class HomeView(ListView):
     model = Product
     template_name = "home.html"
     context_object_name = "products"
+
+    def get_queryset(self):
+
+        return Product.objects.filter(is_published=True)
 
 
 class ContactsView(TemplateView):
@@ -35,6 +40,25 @@ class ProductDetailView(DetailView):
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
 
+    def get_queryset(self):
+
+        if self.request.user.has_perm("catalog.can_unpublish_product"):
+            return Product.objects.all()
+        else:
+            return Product.objects.filter(is_published=True)
+
+    def post(self, request, *args, **kwargs):
+        product = self.get_object()
+
+        print(f"Before: {product.is_published}")  # Для отладки
+        product.is_published = "is_published" in request.POST
+        product.save()
+        print(f"After: {product.is_published}")  # Для отладки
+
+        messages.success(request, "Статус продукта обновлен.")
+
+        return redirect("catalog:product_detail", pk=product.pk)
+
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
     model = Product
@@ -44,6 +68,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form):
         form.instance.owner = self.request.user
+        form.instance.is_published = True
         return super().form_valid(form)
 
 
@@ -66,9 +91,11 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
 
     def user_has_permission(self, product):
 
-        return (self.request.user == product.owner or
-                self.request.user.has_perm("catalog.can_edit_product") or
-                self.request.user.groups.filter(name='Модератор продуктов').exists())
+        return (
+            self.request.user == product.owner
+            or self.request.user.has_perm("catalog.can_edit_product")
+            or self.request.user.groups.filter(name="Модератор продуктов").exists()
+        )
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
@@ -89,6 +116,8 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
 
     def user_has_permission(self, product):
 
-        return (self.request.user == product.owner or
-                self.request.user.has_perm("catalog.can_delete_product") or
-                self.request.user.groups.filter(name='Модератор продуктов').exists())
+        return (
+            self.request.user == product.owner
+            or self.request.user.has_perm("catalog.can_delete_product")
+            or self.request.user.groups.filter(name="Модератор продуктов").exists()
+        )

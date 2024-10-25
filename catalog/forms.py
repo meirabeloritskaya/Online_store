@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product, Category
+from .models import Product
 
 
 class ProductForm(forms.ModelForm):
@@ -19,8 +19,8 @@ class ProductForm(forms.ModelForm):
         model = Product
         fields = ["name", "description", "category", "price", "is_published"]
         widgets = {
-            'category': forms.Select(attrs={'class': 'form-control'}),
-            'is_published': forms.CheckboxInput()
+            "category": forms.Select(attrs={"class": "form-control"}),
+            "is_published": forms.CheckboxInput(),
         }
 
     def __init__(self, *args, **kwargs):
