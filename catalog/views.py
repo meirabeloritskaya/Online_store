@@ -34,7 +34,6 @@ class ProductDetailView(DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
-    slug_field = "id"
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -55,14 +54,21 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
     success_url = reverse_lazy("catalog:products_list")
 
     def form_valid(self, form):
-        if not self.request.user.has_perm("catalog.can_edit_product"):
-            # Добавляем флеш-сообщение
+        product = self.get_object()
+
+        if not self.user_has_permission(product):
             messages.error(self.request, "У вас нет прав на редактирование продукта.")
-            # Перенаправляем на предыдущую страницу или список продуктов
             return HttpResponseRedirect(
                 self.request.META.get("HTTP_REFERER", self.success_url)
             )
+
         return super().form_valid(form)
+
+    def user_has_permission(self, product):
+
+        return (self.request.user == product.owner or
+                self.request.user.has_perm("catalog.can_edit_product") or
+                self.request.user.groups.filter(name='Модератор продуктов').exists())
 
 
 class ProductDeleteView(LoginRequiredMixin, DeleteView):
@@ -71,12 +77,18 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
     success_url = reverse_lazy("catalog:products_list")
 
     def post(self, request, *args, **kwargs):
+        product = self.get_object()
 
-        if not request.user.has_perm("catalog.can_delete_product"):
-
+        if not self.user_has_permission(product):
             messages.error(request, "У вас нет прав на удаление продукта.")
-
             return HttpResponseRedirect(
                 request.META.get("HTTP_REFERER", self.success_url)
             )
+
         return super().post(request, *args, **kwargs)
+
+    def user_has_permission(self, product):
+
+        return (self.request.user == product.owner or
+                self.request.user.has_perm("catalog.can_delete_product") or
+                self.request.user.groups.filter(name='Модератор продуктов').exists())

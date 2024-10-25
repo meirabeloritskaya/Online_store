@@ -17,10 +17,11 @@ class ProductForm(forms.ModelForm):
 
     class Meta:
         model = Product
-        fields = ["name", "description", "category", "price"]
-        category = forms.ModelChoiceField(
-            queryset=Category.objects.all(), empty_label="Выберите категорию"
-        )
+        fields = ["name", "description", "category", "price", "is_published"]
+        widgets = {
+            'category': forms.Select(attrs={'class': 'form-control'}),
+            'is_published': forms.CheckboxInput()
+        }
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
@@ -33,6 +34,7 @@ class ProductForm(forms.ModelForm):
         self.fields["price"].widget.attrs.update(
             {"class": "form-control", "placeholder": "Введите цену продукта"}
         )
+        self.fields["is_published"].label = "Опубликован"
 
     def clean_name(self):
         name = self.cleaned_data["name"]
