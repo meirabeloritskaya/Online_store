@@ -6,6 +6,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+
+
 from django.http import HttpResponseRedirect
 from django.contrib import messages
 from .models import Product
@@ -13,6 +15,7 @@ from .forms import ProductForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.shortcuts import redirect
+from .services import get_products_by_category
 
 
 class HomeView(ListView):
@@ -121,3 +124,14 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
             or self.request.user.has_perm("catalog.can_delete_product")
             or self.request.user.groups.filter(name="Модератор продуктов").exists()
         )
+
+
+class CategoryProductsView(ListView):
+    model = Product
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        """Получает продукты для определённой категории, используя сервисную функцию."""
+        category_id = self.kwargs["category_id"]
+        return get_products_by_category(category_id)

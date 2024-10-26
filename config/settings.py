@@ -2,6 +2,13 @@ from dotenv import load_dotenv
 from pathlib import Path
 import os
 
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379/1",
+    }
+}
+
 load_dotenv(override=True)
 BASE_DIR = Path(__file__).resolve().parent.parent
 

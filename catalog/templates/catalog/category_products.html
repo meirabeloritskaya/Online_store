@@ -1,0 +1,23 @@
+
+{% extends 'base.html' %}
+
+{% block title %}Продукты в категории{% endblock %}
+
+{% block content %}
+<h1>Продукты в категории</h1>
+<div class="container">
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <h4>{{ product.name }}</h4>
+                    <p>{{ product.description|truncatechars:100 }}</p>
+                    <h5>${{ product.price }}</h5>
+                </div>
+            </div>
+        {% empty %}
+            <p>Нет продуктов в данной категории.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
