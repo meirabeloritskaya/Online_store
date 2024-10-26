@@ -4,29 +4,45 @@ from .models import Product
 
 class ProductForm(forms.ModelForm):
     forbidden_words = [
-        'казино', 'криптовалюта', 'крипта',
-        'биржа', 'дешево', 'бесплатно',
-        'обман', 'полиция', 'радар'
+        "казино",
+        "криптовалюта",
+        "крипта",
+        "биржа",
+        "дешево",
+        "бесплатно",
+        "обман",
+        "полиция",
+        "радар",
     ]
 
     class Meta:
         model = Product
-        fields = ['name', 'description', 'price']
+        fields = ["name", "description", "category", "price", "is_published"]
+        widgets = {
+            "category": forms.Select(attrs={"class": "form-control"}),
+            "is_published": forms.CheckboxInput(),
+        }
 
     def __init__(self, *args, **kwargs):
         super(ProductForm, self).__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Введите название продукта'})
-        self.fields['description'].widget.attrs.update(
-            {'class': 'form-control', 'placeholder': 'Введите описание продукта'})
-        self.fields['price'].widget.attrs.update({'class': 'form-control', 'placeholder': 'Введите цену продукта'})
+        self.fields["name"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Введите название продукта"}
+        )
+        self.fields["description"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Введите описание продукта"}
+        )
+        self.fields["price"].widget.attrs.update(
+            {"class": "form-control", "placeholder": "Введите цену продукта"}
+        )
+        self.fields["is_published"].label = "Опубликован"
 
     def clean_name(self):
-        name = self.cleaned_data['name']
+        name = self.cleaned_data["name"]
         self.validate_forbidden_words(name)
         return name
 
     def clean_description(self):
-        description = self.cleaned_data['description']
+        description = self.cleaned_data["description"]
         self.validate_forbidden_words(description)
         return description
 
@@ -37,7 +53,7 @@ class ProductForm(forms.ModelForm):
                 raise forms.ValidationError(f"Использование слова '{word}' запрещено.")
 
     def clean_price(self):
-        price = self.cleaned_data.get('price')
+        price = self.cleaned_data.get("price")
 
         if price is not None and price < 0:
             raise forms.ValidationError("Цена не может быть отрицательной.")
