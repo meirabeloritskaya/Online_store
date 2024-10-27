@@ -1,10 +1,12 @@
-
 {% extends 'base.html' %}
 
-{% block title %}Продукты в категории{% endblock %}
+{% block title %}Продукты в категории: {{ category.name }}{% endblock %}
 
 {% block content %}
-<h1>Продукты в категории</h1>
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1>Продукты в категории: {{ category.name }}</h1>
+</div>
 <div class="container">
     <div class="row">
         {% for product in products %}

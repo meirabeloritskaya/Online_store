@@ -8,6 +8,7 @@ from .views import (
     ProductDeleteView,
     ProductUpdateView,
     ProductCreateView,
+    CategoryListView,
 )
 from django.views.decorators.cache import cache_page
 
@@ -16,10 +17,12 @@ app_name = "catalog"
 urlpatterns = [
     path("", HomeView.as_view(), name="home"),
     path("contacts/", ContactsView.as_view(), name="contacts"),
+    path("categories/", CategoryListView.as_view(), name="category_list"),
     path("products/", ProductsListView.as_view(), name="products_list"),
     path(
         "products/<int:pk>/",
-        cache_page(60)(ProductDetailView.as_view(), name="product_detail"),
+        cache_page(60)(ProductDetailView.as_view()),
+        name="product_detail",
     ),
     path("products/create/", ProductCreateView.as_view(), name="product_create"),
     path(

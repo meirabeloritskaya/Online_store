@@ -2,6 +2,7 @@
     <h5 class="my-0 mr-md-auto font-weight-normal">Skystore</h5>
     <nav class="ms-5">
         <a class="p-2 btn btn-primary" href="/">Каталог</a>
+        <a class="p-2 btn btn-primary" href="{% url 'catalog:category_list' %}">Категории</a>
         <a class="p-2 btn btn-primary" href="{% url 'catalog:products_list' %}">Список продуктов</a>
         <a class="p-2 btn btn-primary" href="/contacts/">Контакты</a>
         <a class="p-2 btn btn-primary" href="{% url 'blog:blogpost_list' %}">Блог</a>

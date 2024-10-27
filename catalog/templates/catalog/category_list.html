@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+
+{% block title %}Список категорий{% endblock %}
+
+{% block content %}
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1 class="display-4">Список категорий</h1>
+</div>
+
+<div class="container">
+    <div class="row">
+        {% for category in categories %}
+        <div class="col-md-4">
+            <div class="card mb-4 box-shadow">
+                <div class="card-header">
+                    <h4 class="my-0 font-weight-normal">{{ category.name }}</h4>
+                </div>
+                <div class="card-body">
+                    <p class="card-text">{{ category.description|truncatechars:100 }}</p>
+                    <a href="{% url 'catalog:category_products' category.id %}" class="btn btn-lg btn-primary">Подробнее</a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
