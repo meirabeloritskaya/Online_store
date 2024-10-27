@@ -122,30 +122,3 @@ LOGIN_REDIRECT_URL = "/"
 LOGOUT_REDIRECT_URL = "/"
 
 REGISTER_REDIRECT_URL = "/users/login/"
-
-LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "handlers": {
-        "console": {
-            "class": "logging.StreamHandler",
-        },
-        "file": {
-            "level": "DEBUG",
-            "class": "logging.FileHandler",
-            "filename": "django_debug.log",
-        },
-    },
-    "loggers": {
-        "django": {
-            "handlers": ["console", "file"],
-            "level": "DEBUG",
-            "propagate": True,
-        },
-        "your_app_name": {
-            "handlers": ["console", "file"],
-            "level": "DEBUG",
-            "propagate": False,
-        },
-    },
-}

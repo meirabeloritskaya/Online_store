@@ -6,6 +6,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.core.cache import cache
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import cache_page
 from django.http import HttpResponseRedirect
@@ -36,6 +37,18 @@ class ProductsListView(ListView):
     template_name = "catalog/products_list.html"
     context_object_name = "products"
 
+    def get_queryset(self):
+
+        cache_key = "product_list"
+        cache_timeout = 60 * 15
+
+        products = cache.get(cache_key)
+        if products is None:
+            products = Product.objects.all()
+            cache.set(cache_key, products, cache_timeout)
+
+        return products
+
 
 @method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductDetailView(DetailView):
@@ -64,6 +77,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         form.instance.is_published = True
+        cache.delete("product_list")
         return super().form_valid(form)
 
 
@@ -81,7 +95,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             return HttpResponseRedirect(
                 self.request.META.get("HTTP_REFERER", self.success_url)
             )
-
+        cache.delete("product_list")
         return super().form_valid(form)
 
     def user_has_permission(self, product):
@@ -106,7 +120,7 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
             return HttpResponseRedirect(
                 request.META.get("HTTP_REFERER", self.success_url)
             )
-
+        cache.delete("product_list")
         return super().post(request, *args, **kwargs)
 
     def user_has_permission(self, product):
