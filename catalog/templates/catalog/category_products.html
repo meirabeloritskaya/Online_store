@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block title %}Продукты в категории: {{ category.name }}{% endblock %}
+
+{% block content %}
+
+<div class="pricing-header px-3 py-3 pt-md-5 pb-md-4 mx-auto text-center">
+    <h1>Продукты в категории: {{ category.name }}</h1>
+</div>
+<div class="container">
+    <div class="row">
+        {% for product in products %}
+            <div class="col-md-4">
+                <div class="card mb-4 box-shadow">
+                    <h4>{{ product.name }}</h4>
+                    <p>{{ product.description|truncatechars:100 }}</p>
+                    <h5>${{ product.price }}</h5>
+                </div>
+            </div>
+        {% empty %}
+            <p>Нет продуктов в данной категории.</p>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

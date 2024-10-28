@@ -6,13 +6,16 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
+from django.core.cache import cache
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
 from django.http import HttpResponseRedirect
 from django.contrib import messages
-from .models import Product
+from .models import Product, Category
 from .forms import ProductForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.shortcuts import redirect
+from .services import get_products_by_category
 
 
 class HomeView(ListView):
@@ -34,30 +37,35 @@ class ProductsListView(ListView):
     template_name = "catalog/products_list.html"
     context_object_name = "products"
 
+    def get_queryset(self):
 
+        cache_key = "product_list"
+        cache_timeout = 60 * 15
+
+        products = cache.get(cache_key)
+        if products is None:
+            products = Product.objects.all()
+            cache.set(cache_key, products, cache_timeout)
+
+        return products
+
+
+@method_decorator(cache_page(60 * 15), name="dispatch")
 class ProductDetailView(DetailView):
     model = Product
     template_name = "catalog/product_detail.html"
     context_object_name = "product"
 
     def get_queryset(self):
-
         if self.request.user.has_perm("catalog.can_unpublish_product"):
             return Product.objects.all()
         else:
             return Product.objects.filter(is_published=True)
 
-    def post(self, request, *args, **kwargs):
-        product = self.get_object()
-
-        print(f"Before: {product.is_published}")  # Для отладки
-        product.is_published = "is_published" in request.POST
-        product.save()
-        print(f"After: {product.is_published}")  # Для отладки
-
-        messages.success(request, "Статус продукта обновлен.")
-
-        return redirect("catalog:product_detail", pk=product.pk)
+    def get(self, request, *args, **kwargs):
+        self.object = self.get_object()
+        context = self.get_context_data(object=self.object)
+        return self.render_to_response(context)
 
 
 class ProductCreateView(LoginRequiredMixin, CreateView):
@@ -69,6 +77,7 @@ class ProductCreateView(LoginRequiredMixin, CreateView):
     def form_valid(self, form):
         form.instance.owner = self.request.user
         form.instance.is_published = True
+        cache.delete("product_list")
         return super().form_valid(form)
 
 
@@ -86,7 +95,7 @@ class ProductUpdateView(LoginRequiredMixin, UpdateView):
             return HttpResponseRedirect(
                 self.request.META.get("HTTP_REFERER", self.success_url)
             )
-
+        cache.delete("product_list")
         return super().form_valid(form)
 
     def user_has_permission(self, product):
@@ -111,7 +120,7 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
             return HttpResponseRedirect(
                 request.META.get("HTTP_REFERER", self.success_url)
             )
-
+        cache.delete("product_list")
         return super().post(request, *args, **kwargs)
 
     def user_has_permission(self, product):
@@ -121,3 +130,26 @@ class ProductDeleteView(LoginRequiredMixin, DeleteView):
             or self.request.user.has_perm("catalog.can_delete_product")
             or self.request.user.groups.filter(name="Модератор продуктов").exists()
         )
+
+
+class CategoryListView(ListView):
+    model = Category
+    template_name = "catalog/category_list.html"  # Шаблон для списка категорий
+    context_object_name = "categories"  # Название контекста для шаблона
+
+
+class CategoryProductsView(ListView):
+    model = Product
+    template_name = "catalog/category_products.html"
+    context_object_name = "products"
+
+    def get_queryset(self):
+        """Получает продукты для определённой категории, используя сервисную функцию."""
+        category_id = self.kwargs["category_id"]
+        return get_products_by_category(category_id)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        category_id = self.kwargs["category_id"]
+        context["category"] = Category.objects.get(id=category_id)
+        return context
